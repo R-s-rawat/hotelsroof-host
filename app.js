@@ -13,7 +13,9 @@ app.use(cookieParser())
 app.use(bodyParser.json({limit:'10mb'}))
 app.use(bodyParser.urlencoded({limit:'10mb',extended: true}))
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: [
+    process.env.CLIENT_URL,
+  ],
   credentials: true, //enable set cookie
 }))
 
