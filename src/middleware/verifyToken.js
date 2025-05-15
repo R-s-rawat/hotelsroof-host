@@ -6,10 +6,11 @@ const verifyToken = (req, res, next) => {
     try{
         const token = req.cookies.token; 
         console.log("your request that we received", req);
+        console.log('Cookies received:', req.cookies);
         // console.log('Token from cookie:', token);
         //const token = req.headers.authorization?.split(' ')[1]; //Bearer token(testing oK)
         if (!token) {
-        return res.status(401).send({ message: 'Token not found' });
+        return res.status(401).send({ message: `Token not found, we get ${req}` });
         }
 
         const decoded = jwt.verify(token, JWT_SECRET);
