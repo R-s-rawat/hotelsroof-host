@@ -20,38 +20,69 @@ router.post('/register', async(req, res)=>{
 })
 
 // login a user
-router.post('/login', async(req,res)=>{
+// router.post('/login', async(req,res)=>{
+//   try {
+//     // console.log(req.body)
+//     const {email, password} = req.body;
+//     const user = await User.findOne({email})
+//     // console.log(user)
+//     if(!user){
+//       return res.status(404).send({message:"User not found!"})
+//     }
+//     const isMatch = await user.comparePassword(password)
+//     if(!isMatch){
+//       return res.status(401).send({message:'Invalid password'})
+//     }
+//     // todo: generate token here
+//     const token = await generateToken(user._id);
+//       res.cookie("token",token,{
+//         httpOnly:true,// enable this when you have https://
+//         secure:true,
+//         sameSite:true
+//       })
+//     // console.log("Generated token:",token);
+//     res.status(200).send({message: 'Login successful!',token,user:{
+//       _id: user._id,
+//       email: user.email,
+//       username: user.username,
+//       role: user.role,
+//     }})
+//   } catch (error) {
+//     console.error("Failed to login", error);
+//     res.status(500).json({message:'Login failed! Try again'})
+//   }
+// })
+router.post('/login', async (req, res) => {
   try {
-    // console.log(req.body)
-    const {email, password} = req.body;
-    const user = await User.findOne({email})
-    // console.log(user)
-    if(!user){
-      return res.status(404).send({message:"User not found!"})
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).send({ message: "User not found!" });
     }
-    const isMatch = await user.comparePassword(password)
-    if(!isMatch){
-      return res.status(401).send({message:'Invalid password'})
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).send({ message: 'Invalid password' });
     }
-    // todo: generate token here
+
     const token = await generateToken(user._id);
-      res.cookie("token",token,{
-        httpOnly:true,// enable this when you have https://
-        secure:true,
-        sameSite:true
-      })
-    // console.log("Generated token:",token);
-    res.status(200).send({message: 'Login successful!',token,user:{
-      _id: user._id,
-      email: user.email,
-      username: user.username,
-      role: user.role,
-    }})
+
+    // Do NOT set cookie here, just send token in response body
+    res.status(200).send({
+      message: 'Login successful!',
+      token,  // frontend will save this in localStorage
+      user: {
+        _id: user._id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+      }
+    });
   } catch (error) {
     console.error("Failed to login", error);
-    res.status(500).json({message:'Login failed! Try again'})
+    res.status(500).json({ message: 'Login failed! Try again' });
   }
-})
+});
+
 
 // logout a user
 router.post('/logout', async(req,res)=>{
