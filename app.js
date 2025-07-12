@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({limit:'10mb',extended: true}))
 app.use(cors({
   origin: [
     process.env.CLIENT_URL,
+    "http://localhost:5173", 
   ],
   credentials: true, //enable set cookie
 }))
