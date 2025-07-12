@@ -12,13 +12,33 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(bodyParser.json({limit:'10mb'}))
 app.use(bodyParser.urlencoded({limit:'10mb',extended: true}))
+
+// app.use(cors({
+//   origin: [
+//     process.env.CLIENT_URL,
+//     "http://localhost:5173", 
+//   ],
+//   credentials: true, //enable set cookie
+// }))
+
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "http://localhost:5173",
+  "https://hotelsroof-site.vercel.app"
+];
+
 app.use(cors({
-  origin: [
-    process.env.CLIENT_URL,
-    "http://localhost:5173", 
-  ],
-  credentials: true, //enable set cookie
-}))
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.error("Blocked by CORS:", origin);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
+
 
 //routes
 const blogRoutes = require('./src/routes/blog.route')

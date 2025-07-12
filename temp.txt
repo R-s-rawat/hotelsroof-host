@@ -1,0 +1,30 @@
+The origin option in cors() does not accept an array directly unless you handle it as a function.
+
+i.e ❌this not work
+app.use(cors({
+  origin: [
+    process.env.CLIENT_URL,
+    "http://localhost:5173"
+  ],
+  credentials: true,
+}));
+
+✅ Correct Fix: Update CORS middleware:
+
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "http://localhost:5173",
+  "https://hotelsroof-site.vercel.app"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.error("Blocked by CORS:", origin);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
